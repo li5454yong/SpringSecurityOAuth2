@@ -15,7 +15,6 @@ import org.springframework.security.oauth2.provider.approval.TokenStoreUserAppro
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
-import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
 
 /**
  * security配置
@@ -30,7 +29,12 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private ClientDetailsService clientDetailsService;
-	
+
+	/**
+	 * 在内存中创建两个用户
+	 * @param auth
+	 * @throws Exception
+	 */
 	@Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
@@ -38,7 +42,12 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .withUser("bob").password("abc123").roles("USER");
     }
 
-    @Override
+	/**
+	 * 设置获取token的url
+	 * @param http
+	 * @throws Exception
+	 */
+	@Override
     protected void configure(HttpSecurity http) throws Exception {
 		http
 		.anonymous().disable()
@@ -52,7 +61,10 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
+	/**
+	 * 实例化一个TokenStore，他的实现是InMemoryTokenStore，会把OAuth授权的token保存在内存中
+	 * @return
+	 */
 	@Bean
 	public TokenStore tokenStore() {
 		return new InMemoryTokenStore();
@@ -67,7 +79,7 @@ public class OAuth2SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		handler.setClientDetailsService(clientDetailsService);
 		return handler;
 	}
-	
+
 	@Bean
 	@Autowired
 	public ApprovalStore approvalStore(TokenStore tokenStore) throws Exception {

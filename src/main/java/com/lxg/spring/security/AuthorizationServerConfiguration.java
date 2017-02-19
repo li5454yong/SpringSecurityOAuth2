@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.approval.UserApprovalHandler;
+import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 /**
  * 认证服务器配置
@@ -22,7 +23,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
 	private static String REALM="MY_OAUTH_REALM";
-	
+
 	@Autowired
 	private TokenStore tokenStore;
 
@@ -42,8 +43,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
             .authorities("ROLE_CLIENT", "ROLE_TRUSTED_CLIENT")
             .scopes("read", "write", "trust")//授权用户的操作权限
             .secret("secret")//密码
-            .accessTokenValiditySeconds(120).//token有效期为120秒
-            refreshTokenValiditySeconds(600);//刷新token有效期为600秒
+			.accessTokenValiditySeconds(6000);//token有效期为120秒
 	}
 
 	@Override
